@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>README.md Generator</title>
+
+    <meta
+      name="description"
+      content="Generator README.md gratis dan cerdas berbasis AI dari GitHub repository. Buat README yang profesional, menarik, dan mudah dipahami hanya dalam satu klik. Dibuat oleh emRival." />
+    <meta
+      name="keywords"
+      content="README generator, GitHub README generator, AI README maker, free markdown generator, emRival, auto generate readme, open source documentation" />
+    <meta name="author" content="emRival" />
+    <meta
+      property="og:title"
+      content="Generator README.md dari GitHub (Ditingkatkan)" />
+    <meta
+      property="og:description"
+      content="Generator README.md gratis berbasis AI untuk membuat dokumentasi GitHub yang profesional dan menarik." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://emrival.github.io/github-readme-generator/" />
+    <meta
+      property="og:image"
+      content="https://emrival.github.io/github-readme-generator/" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet" />
+    <!-- GitHub Markdown CSS (Dark Theme) -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.1/github-markdown-dark.min.css"
+      xintegrity="sha512-VSsvlrOrYO3aEGGyspPXRjFbRhmM0T1Xv6UPUn1SgI2M2dxnJno7iNJWzF4U2zgv0i5ZM/j/I199g14P2i5QAQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer" />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+      }
+
+      .markdown-body ul {
+        list-style-type: disc;
+        padding-left: 1.5em;
+      }
+      .markdown-body hr {
+        border: none;
+        border-top: 1px solid #444;
+        margin: 1.5rem 0;
+      }
+      .markdown-body p {
+        margin-bottom: 1rem;
+      }
+      .lds-dual-ring {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+      }
+      .lds-dual-ring:after {
+        content: " ";
+        display: block;
+        width: 16px;
+        height: 16px;
+        margin: 2px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        border-color: #fff transparent #fff transparent;
+        animation: lds-dual-ring 1.2s linear infinite;
+      }
+      @keyframes lds-dual-ring {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      details > summary {
+        list-style: none;
+      }
+      details > summary::-webkit-details-marker {
+        display: none;
+      }
+      .tag-pill {
+        display: inline-flex;
+        align-items: center;
+        background-color: #0891b2;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+      }
+      .tag-remove-btn {
+        margin-left: 0.5rem;
+        width: 1rem;
+        height: 1rem;
+        background-color: #164e63;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: bold;
+        line-height: 1;
+        transition: background-color 0.2s;
+      }
+      .tag-remove-btn:hover {
+        background-color: #1e3a8a;
+      }
+
+      /* Custom container for GitHub Markdown style */
+      #pane-preview.markdown-body {
+        box-sizing: border-box;
+        background-color: #0d1117;
+        padding: 2.5rem;
+        border-radius: 0 0 0.5rem 0.5rem;
+      }
+
+      @media (max-width: 767px) {
+        #pane-preview.markdown-body {
+          padding: 1rem;
+        }
+      }
+
+      .modal-backdrop {
+        background-color: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
+    <!-- Main App Container -->
+    <div class="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8">
+      <div class="text-center mb-6">
+        <h1 class="text-3xl md:text-4xl font-bold text-cyan-400">
+          Generator README.md
+        </h1>
+        <p class="text-gray-400 mt-2">
+          Buat README.md profesional dengan konteks yang lebih baik menggunakan
+          AI.
+        </p>
+      </div>
+
+      <!-- Input Section -->
+      <div class="space-y-4 mb-4">
+        <div class="flex flex-col md:flex-row gap-4">
+          <input
+            type="text"
+            id="githubUrl"
+            placeholder="Tempel URL Repositori GitHub di sini..."
+            class="flex-grow bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 transition" />
+          <button
+            id="generateBtn"
+            class="bg-cyan-500 hover:bg-cyan-600 text-white font-bold py-3 px-6 rounded-lg flex items-center justify-center transition shadow-lg shadow-cyan-500/20">
+            <span id="btn-text">Generate</span>
+            <div id="loader" class="lds-dual-ring hidden ml-2"></div>
+          </button>
+        </div>
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <label class="block text-sm font-medium text-gray-300 mb-2"
+            >Link Gambar/GIF Dokumentasi</label
+          >
+          <div id="image-inputs-container" class="space-y-3"></div>
+          <button
+            id="add-image-btn"
+            class="mt-3 text-sm bg-cyan-800 hover:bg-cyan-700 text-cyan-200 font-semibold py-2 px-4 rounded-lg transition">
+            + Tambah Gambar
+          </button>
+        </div>
+        <div class="bg-gray-900/50 p-4 rounded-lg">
+          <label
+            for="tags-input"
+            class="block text-sm font-medium text-gray-300 mb-2"
+            >Tag Konteks (Tekan Enter untuk menambah)</label
+          >
+          <div id="tags-container" class="mb-2"></div>
+          <input
+            type="text"
+            id="tags-input"
+            placeholder="e.g., react, nodejs, data visualization..."
+            class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500" />
+        </div>
+        <details class="group">
+          <summary
+            class="cursor-pointer text-sm text-gray-400 hover:text-cyan-400 transition">
+            <span class="font-medium">Pengaturan Lanjutan</span>
+          </summary>
+          <div class="mt-3 bg-gray-900/50 p-4 rounded-lg space-y-4">
+            <div>
+              <label
+                for="githubToken"
+                class="block text-sm font-medium text-gray-300 mb-1"
+                >GitHub Personal Access Token</label
+              >
+              <div class="flex gap-3">
+                <input
+                  type="password"
+                  id="githubToken"
+                  placeholder="Tempel token untuk atasi batas API GitHub"
+                  class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500" />
+                <button
+                  id="save-github-token-btn"
+                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+                  Save
+                </button>
+              </div>
+            </div>
+            <div>
+              <label
+                for="geminiToken"
+                class="block text-sm font-medium text-gray-300 mb-1"
+                >Gemini API Key</label
+              >
+              <div class="flex gap-3">
+                <input
+                  type="password"
+                  id="geminiToken"
+                  placeholder="Tempel Gemini API Key untuk akses tanpa batas"
+                  class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500" />
+                <button
+                  id="save-gemini-token-btn"
+                  class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+        </details>
+      </div>
+
+      <div id="message-container" class="mb-6"></div>
+
+      <div id="output-container" class="bg-gray-900 rounded-lg p-4">
+        <div class="flex border-b border-gray-700">
+          <button
+            id="tab-markdown"
+            class="py-2 px-4 font-semibold text-white bg-gray-800 rounded-t-lg">
+            Markdown
+          </button>
+          <button
+            id="tab-preview"
+            class="py-2 px-4 font-semibold text-gray-400 hover:bg-gray-800/50 rounded-t-lg">
+            Preview
+          </button>
+          <div class="flex-grow"></div>
+          <button
+            id="copyBtn"
+            class="bg-gray-700 hover:bg-gray-600 text-gray-300 font-semibold my-auto py-1 px-3 rounded-lg text-sm transition">
+            Salin Teks
+          </button>
+        </div>
+        <div id="pane-markdown" class="mt-4">
+          <textarea
+            id="readmeOutput"
+            rows="20"
+            class="w-full bg-gray-800 border-2 border-gray-700 rounded-b-lg p-4 text-gray-200 font-mono text-sm"
+            readonly
+            placeholder="Hasil Markdown akan muncul di sini..."></textarea>
+        </div>
+        <div
+          id="pane-preview"
+          class="hidden markdown-body max-w-none w-full min-h-[480px] overflow-y-auto">
+          <p class="text-gray-500">Pratinjau akan muncul di sini...</p>
+        </div>
+      </div>
+
+      <div class="text-center mt-6 text-gray-500 text-sm">
+        Dibuat dengan <span class="text-red-500">&hearts;</span> dan AI
+      </div>
+    </div>
+
+    <!-- API Keys Modal -->
+    <div
+      id="api-keys-modal"
+      class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop">
+      <div
+        class="bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full p-8 space-y-6 transform transition-all">
+        <h2 class="text-2xl font-bold text-cyan-400">Pengaturan API Keys</h2>
+        <p class="text-gray-300">
+          Untuk menggunakan aplikasi ini, Anda memerlukan kedua key di bawah
+          ini. Tanpa Gemini API Key, Anda hanya bisa generate **1x per hari**.
+        </p>
+        <div class="space-y-4">
+          <div>
+            <label
+              for="modal-github-token"
+              class="block text-sm font-medium text-gray-300 mb-1"
+              >GitHub Personal Access Token</label
+            >
+            <input
+              type="password"
+              id="modal-github-token"
+              placeholder="github_pat_..."
+              class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white" />
+            <p class="mt-2 text-xs text-gray-500">
+              Dibutuhkan untuk mengambil data repo.
+              <a
+                href="https://github.com/settings/tokens?type=beta"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-cyan-500 hover:underline"
+                >Buat token GitHub di sini</a
+              >.
+            </p>
+          </div>
+          <div>
+            <label
+              for="modal-gemini-token"
+              class="block text-sm font-medium text-gray-300 mb-1"
+              >Gemini API Key</label
+            >
+            <input
+              type="password"
+              id="modal-gemini-token"
+              placeholder="AIza..."
+              class="w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white" />
+            <p class="mt-2 text-xs text-gray-500">
+              Dibutuhkan untuk generate konten.
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-cyan-500 hover:underline"
+                >Dapatkan key Gemini gratis di sini</a
+              >.
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            id="modal-save-keys-btn"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition">
+            Simpan & Lanjutkan
+          </button>
+          <button
+            id="modal-close-btn"
+            class="w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg transition">
+            Lanjutkan Tanpa Gemini Key
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // DOM Elements
+        const githubUrlInput = document.getElementById("githubUrl");
+        const generateBtn = document.getElementById("generateBtn");
+        const copyBtn = document.getElementById("copyBtn");
+        const loader = document.getElementById("loader");
+        const btnText = document.getElementById("btn-text");
+        const githubTokenInput = document.getElementById("githubToken");
+        const saveGithubTokenBtn = document.getElementById(
+          "save-github-token-btn"
+        );
+        const geminiTokenInput = document.getElementById("geminiToken");
+        const saveGeminiTokenBtn = document.getElementById(
+          "save-gemini-token-btn"
+        );
+        const imageInputsContainer = document.getElementById(
+          "image-inputs-container"
+        );
+        const addImageBtn = document.getElementById("add-image-btn");
+        const tagsInput = document.getElementById("tags-input");
+        const tagsContainer = document.getElementById("tags-container");
+        const messageContainer = document.getElementById("message-container");
+        const readmeOutput = document.getElementById("readmeOutput");
+        const previewPane = document.getElementById("pane-preview");
+        const markdownPane = document.getElementById("pane-markdown");
+        const markdownTab = document.getElementById("tab-markdown");
+        const previewTab = document.getElementById("tab-preview");
+        const apiKeysModal = document.getElementById("api-keys-modal");
+        const modalGithubTokenInput =
+          document.getElementById("modal-github-token");
+        const modalGeminiTokenInput =
+          document.getElementById("modal-gemini-token");
+        const modalSaveKeysBtn = document.getElementById("modal-save-keys-btn");
+        const modalCloseBtn = document.getElementById("modal-close-btn");
+
+        let tags = new Set();
+
+        // --- Initialization ---
+        githubTokenInput.value = localStorage.getItem("githubApiToken") || "";
+        geminiTokenInput.value = localStorage.getItem("geminiApiKey") || "";
+        addNewImageInput(true);
+
+        // Show modal if either key is missing
+        if (
+          !localStorage.getItem("githubApiToken") ||
+          !localStorage.getItem("geminiApiKey")
+        ) {
+          apiKeysModal.classList.remove("hidden");
+        }
+
+        // --- Event Listeners ---
+        generateBtn.addEventListener("click", handleGenerateReadme);
+        copyBtn.addEventListener("click", copyToClipboard);
+        saveGithubTokenBtn.addEventListener("click", () =>
+          saveToken("githubApiToken", githubTokenInput.value, "GitHub")
+        );
+        saveGeminiTokenBtn.addEventListener("click", () =>
+          saveToken("geminiApiKey", geminiTokenInput.value, "Gemini")
+        );
+        addImageBtn.addEventListener("click", () => addNewImageInput(false));
+        tagsInput.addEventListener("keydown", handleTagInput);
+        tagsContainer.addEventListener("click", handleTagRemove);
+        markdownTab.addEventListener("click", () => switchTab("markdown"));
+        previewTab.addEventListener("click", () => switchTab("preview"));
+
+        // Modal listeners
+        modalSaveKeysBtn.addEventListener("click", () => {
+          saveToken("githubApiToken", modalGithubTokenInput.value, "GitHub");
+          saveToken("geminiApiKey", modalGeminiTokenInput.value, "Gemini");
+          githubTokenInput.value = modalGithubTokenInput.value;
+          geminiTokenInput.value = modalGeminiTokenInput.value;
+          apiKeysModal.classList.add("hidden");
+        });
+        modalCloseBtn.addEventListener("click", () =>
+          apiKeysModal.classList.add("hidden")
+        );
+
+        // --- Functions ---
+        function saveToken(key, value, name) {
+          if (value) {
+            localStorage.setItem(key, value);
+            showMessage("success", `Token API ${name} berhasil disimpan.`);
+          } else {
+            localStorage.removeItem(key);
+            showMessage("info", `Token API ${name} dihapus dari penyimpanan.`);
+          }
+        }
+
+        function addNewImageInput(isFirst = false) {
+          const div = document.createElement("div");
+          div.className = "flex items-center gap-3";
+          div.innerHTML = `<input type="text" class="image-url-input w-full bg-gray-700 border-2 border-gray-600 rounded-lg px-4 py-2 text-white placeholder-gray-500" placeholder="https://.../image.png"> ${
+            !isFirst
+              ? '<button class="remove-image-btn text-red-400 hover:text-red-300 font-bold text-xl">&times;</button>'
+              : ""
+          }`;
+          imageInputsContainer.appendChild(div);
+          if (!isFirst) {
+            div
+              .querySelector(".remove-image-btn")
+              .addEventListener("click", () => div.remove());
+          }
+        }
+
+        function handleTagInput(e) {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            const tagText = tagsInput.value.trim().toLowerCase();
+            if (tagText && !tags.has(tagText)) {
+              tags.add(tagText);
+              const tagPill = document.createElement("div");
+              tagPill.className = "tag-pill";
+              tagPill.innerHTML = `<span>${tagText}</span><span class="tag-remove-btn" data-tag="${tagText}">&times;</span>`;
+              tagsContainer.appendChild(tagPill);
+            }
+            tagsInput.value = "";
+          }
+        }
+
+        function handleTagRemove(e) {
+          if (e.target.classList.contains("tag-remove-btn")) {
+            e.target.parentElement.remove();
+            tags.delete(e.target.dataset.tag);
+          }
+        }
+
+        function renderPreview() {
+          let markdownText = readmeOutput.value.trim();
+
+          if (
+            markdownText.startsWith("```markdown") &&
+            markdownText.endsWith("```")
+          ) {
+            markdownText = markdownText
+              .replace(/^```markdown/, "")
+              .replace(/```$/, "")
+              .trim();
+          }
+
+          previewPane.innerHTML = `<div class="markdown-body">${marked.parse(
+            markdownText
+          )}</div>`;
+        }
+
+        function switchTab(tabName) {
+          const isMarkdown = tabName === "markdown";
+          markdownPane.classList.toggle("hidden", !isMarkdown);
+          previewPane.classList.toggle("hidden", isMarkdown);
+
+          markdownTab.classList.toggle("bg-gray-800", isMarkdown);
+          markdownTab.classList.toggle("text-white", isMarkdown);
+          markdownTab.classList.toggle("text-gray-400", !isMarkdown);
+          markdownTab.classList.toggle("hover:bg-gray-800/50", !isMarkdown);
+
+          previewTab.classList.toggle("bg-gray-800", !isMarkdown);
+          previewTab.classList.toggle("text-white", !isMarkdown);
+          previewTab.classList.toggle("text-gray-400", isMarkdown);
+          previewTab.classList.toggle("hover:bg-gray-800/50", isMarkdown);
+
+          if (!isMarkdown) {
+            renderPreview();
+          }
+        }
+
+        function setLoading(isLoading) {
+          generateBtn.disabled = isLoading;
+          btnText.textContent = isLoading ? "Memproses..." : "Generate";
+          loader.classList.toggle("hidden", !isLoading);
+          if (isLoading) {
+            readmeOutput.value =
+              "Menganalisis repositori dan menghasilkan README.md, mohon tunggu...";
+            renderPreview();
+          }
+        }
+
+        function showMessage(type, message) {
+          messageContainer.innerHTML = "";
+          const colors = {
+            error: "bg-red-900 border-red-700 text-red-300",
+            success: "bg-green-900 border-green-700 text-green-300",
+            info: "bg-blue-900 border-blue-700 text-blue-300",
+          };
+          const div = document.createElement("div");
+          div.className = `p-4 rounded-lg border ${
+            colors[type] || colors.info
+          }`;
+          div.textContent = message;
+          messageContainer.appendChild(div);
+          setTimeout(() => {
+            if (div) {
+              div.style.transition = "opacity 0.5s";
+              div.style.opacity = "0";
+              setTimeout(() => div.remove(), 500);
+            }
+          }, 4000);
+        }
+
+        async function handleGenerateReadme() {
+          messageContainer.innerHTML = "";
+          const userGeminiKey = localStorage.getItem("geminiApiKey");
+          const userGithubKey = localStorage.getItem("githubApiToken");
+
+          if (!userGithubKey) {
+            showMessage(
+              "error",
+              `GitHub Personal Access Token diperlukan. Silakan tambahkan di Pengaturan Lanjutan atau saat pertama kali membuka web.`
+            );
+            return;
+          }
+
+          if (!userGeminiKey) {
+            const lastGenTimestamp = localStorage.getItem(
+              "lastGenerationTimestamp"
+            );
+            if (lastGenTimestamp) {
+              const timeDiff = new Date().getTime() - Number(lastGenTimestamp);
+              const hoursPassed = timeDiff / (1000 * 60 * 60);
+              if (hoursPassed < 24) {
+                showMessage(
+                  "error",
+                  `Anda telah mencapai batas 1x generate per hari. Sisa waktu: ${(
+                    24 - hoursPassed
+                  ).toFixed(
+                    1
+                  )} jam. Tambahkan Gemini API Key untuk akses tanpa batas.`
+                );
+                return;
+              }
+            }
+          }
+
+          const url = githubUrlInput.value.trim();
+          if (!url) {
+            return showMessage("error", "URL GitHub tidak boleh kosong.");
+          }
+          const repoPath = parseGithubUrl(url);
+          if (!repoPath) {
+            return showMessage("error", "Format URL GitHub tidak valid.");
+          }
+
+          setLoading(true);
+          switchTab("markdown");
+
+          try {
+            const [repoDetails, repoTree] = await Promise.all([
+              fetchGithubApi(`https://api.github.com/repos/${repoPath}`),
+              fetchGithubApi(
+                `https://api.github.com/repos/${repoPath}/git/trees/main?recursive=1`
+              ),
+            ]);
+            const imageUrls = Array.from(
+              document.querySelectorAll(".image-url-input")
+            )
+              .map((input) => input.value.trim())
+              .filter(Boolean);
+            const prompt = createPrompt(
+              repoDetails,
+              repoTree.tree.map((f) => f.path),
+              imageUrls,
+              Array.from(tags)
+            );
+
+            const generatedReadme = await callGeminiApi(prompt, userGeminiKey);
+
+            readmeOutput.value = generatedReadme;
+            switchTab("preview");
+            renderPreview(); // ini HARUS dipanggil setelah preview ditampilkan
+
+            showMessage(
+              "success",
+              "README.md berhasil dibuat! Cek tab 'Preview' untuk hasilnya."
+            );
+
+            if (!userGeminiKey) {
+              localStorage.setItem(
+                "lastGenerationTimestamp",
+                new Date().getTime().toString()
+              );
+            }
+          } catch (error) {
+            showMessage(
+              "error",
+              error.message || "Terjadi kesalahan yang tidak diketahui."
+            );
+            readmeOutput.value = `# Gagal Membuat README\n\n**Error:** ${error.message}`;
+            renderPreview();
+          } finally {
+            setLoading(false);
+          }
+        }
+
+        function parseGithubUrl(url) {
+          const match = url.match(/github\.com\/([^\/]+\/[^\/]+)(\/|$)/);
+          return match ? match[1].replace(".git", "") : null;
+        }
+
+        async function fetchGithubApi(apiUrl) {
+          const token = localStorage.getItem("githubApiToken");
+          const headers = { Accept: "application/vnd.github.v3+json" };
+          if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+          }
+          const response = await fetch(apiUrl, { headers });
+          if (!response.ok) {
+            if (response.status === 401)
+              throw new Error(
+                `Token GitHub tidak valid. Silakan periksa token Anda.`
+              );
+            if (response.status === 404)
+              throw new Error(
+                `Repositori tidak ditemukan atau branch 'main' tidak ada.`
+              );
+            if (response.status === 403)
+              throw new Error(
+                `Batas API GitHub terlampaui. Mungkin token Anda salah atau telah mencapai batas.`
+              );
+            throw new Error(
+              `Error dari GitHub API (status: ${response.status})`
+            );
+          }
+          return response.json();
+        }
+
+        function createPrompt(repoDetails, files, imageUrls, tags) {
+          let imageInstruction = "";
+          if (imageUrls.length > 0) {
+            let imageMarkdown;
+            if (imageUrls.length === 1) {
+              imageMarkdown = `\n<p align="center"><img src="${imageUrls[0]}" alt="Pratinjau Proyek" width="80%"></p>\n`;
+            } else if (imageUrls.length <= 3) {
+              const imagesHtml = imageUrls
+                .map((url) => `<img src="${url}" alt="Pratinjau" width="32%">`)
+                .join("\n");
+              imageMarkdown = `\n<p align="center" style="display: flex; gap: 1%; justify-content: center;">${imagesHtml}</p>\n`;
+            } else {
+              const imagesHtml = imageUrls
+                .map((url) => `<img src="${url}" alt="Pratinjau" width="48%">`)
+                .join("\n");
+              imageMarkdown = `\n<p align="center" style="display: flex; flex-wrap: wrap; gap: 2%; justify-content: center;">${imagesHtml}</p>\n`;
+            }
+            imageInstruction = `4.  **Galeri Proyek 🖼️**: Tampilkan galeri ini:\n${imageMarkdown}`;
+          }
+
+          let tagInstruction =
+            tags.length > 0
+              ? `\n**Konteks Tambahan dari Pengguna (Referensi Kuat!):**\n- Tags: ${tags.join(
+                  ", "
+                )}\n`
+              : "";
+          const structureNumbers = {
+            features: 4,
+            tech: 5,
+            install: 6,
+            contribute: 7,
+            license: 8,
+            credits: 9,
+          };
+          if (imageUrls.length > 0)
+            Object.keys(structureNumbers).forEach(
+              (key) => structureNumbers[key]++
+            );
+
+          return `Sebagai seorang ahli rekayasa perangkat lunak dan penulis teknis, buatkan file README.md yang SANGAT BAGUS, profesional, jelas, dan mudah diaplikasikan untuk repositori GitHub berikut.
+                    Gunakan GAYA BAHASA YANG EKSPRESIF DAN JELAS dengan banyak emoji yang relevan untuk menyorot poin penting.
+                    Data Repositori:
+                    - Nama: ${repoDetails.name}
+                    - Deskripsi: ${
+                      repoDetails.description || "Tidak ada deskripsi."
+                    }
+                    - Bahasa Utama: ${repoDetails.language}
+                    - Link: ${repoDetails.html_url}
+                    - Files: ${files.slice(0, 20).join(", ")}
+                    ${tagInstruction}
+                    Struktur dan Instruksi README (Ikuti dengan SANGAT KETAT):
+                    1.  **Judul Proyek**: Gunakan nama proyek sebagai H1 dan jangan gunakan _underscore_ dan buat nama yang lebih relevan. Tambahkan satu emoji yang paling relevan.
+                    2.  **Badges**: Sertakan badge dari Shields.io untuk bahasa utama dan beberapa teknologi lainnya. Posisikan di tengah memanjang ke kanan dengan ada jarak style="margin-right: 8px;" di setiap badge agar tidak terlalu rapat.
+                    3.  **Deskripsi 📝**: Jelaskan proyek dalam 1-2 paragraf yang menarik dan informatif.
+                    ${imageInstruction}
+                    ${
+                      structureNumbers.features
+                    }.  **Fitur Utama ✨**: Buat daftar 3-5 fitur unggulan. Gunakan sub-heading tebal dan daftar poin untuk setiap fitur dengan tanda yang menarik.
+                    ${
+                      structureNumbers.tech
+                    }.  **Tech Stack 🛠️**: Sebutkan teknologi utama (bahasa, framework, database). Gunakan daftar poin. Berikan tebakan cerdas jika informasi terbatas dan tambahkan tanda point.
+                    ${
+                      structureNumbers.install
+                    }.  **Instalasi & Menjalankan 🚀**: Berikan panduan langkah-demi-langkah yang sangat jelas dan mudah diikuti serta dapat di copy dengan mudah.
+                        - 1. Clone repositori: \`git clone ${
+                          repoDetails.html_url
+                        }\`
+                        - 2. Masuk ke direktori: \`cd ${repoDetails.name}\`
+                        - 3. Install dependensi: (Sarankan perintah yang benar berdasarkan file, misal \`npm install\` jika ada 'package.json', atau \`pip install -r requirements.txt\` jika ada 'requirements.txt').
+                        - 4. Jalankan proyek: (Sarankan perintah yang paling umum, misal \`npm start\` atau \`python main.py\`).
+                    ${
+                      structureNumbers.contribute
+                    }. **Cara Berkontribusi 🤝**: Jelaskan cara berkontribusi dengan langkah-langkah standar (Fork, Branch, Commit, Pull Request).
+                    ${
+                      structureNumbers.license
+                    }. **Lisensi 📄**: Sebutkan lisensi proyek dari data (\`${
+            repoDetails.license ? repoDetails.license.name : "Tidak disebutkan"
+          }\`).
+                    ${structureNumbers.credits}. ---
+ **README.md ini dihasilkan secara otomatis menggunakan [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh **[emRival](https://github.com/emRival)**.
+
+                    Pastikan hasil AKHIR HANYA berupa konten Markdown mentah, tanpa penjelasan atau blok kode pembungkus.`;
+        }
+
+        async function callGeminiApi(prompt, apiKey) {
+          if (!apiKey)
+            throw new Error(
+              "Gemini API Key tidak ditemukan. Silakan tambahkan di Pengaturan atau saat pertama kali membuka web."
+            );
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+          const payload = { contents: [{ parts: [{ text: prompt }] }] };
+          const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          if (!response.ok) {
+            const errorData = await response.json();
+            console.error("Gemini API Error:", errorData);
+            throw new Error(
+              `Error dari Gemini API: ${
+                errorData.error?.message || response.statusText
+              }`
+            );
+          }
+          const data = await response.json();
+          if (
+            data.candidates &&
+            data.candidates[0]?.content?.parts?.[0]?.text
+          ) {
+            return data.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error("Gagal mengekstrak konten dari respons AI.");
+          }
+        }
+
+        function copyToClipboard() {
+          let rawText = readmeOutput.value;
+
+          // Hilangkan blok ```markdown dan penutup ```
+          if (rawText.startsWith("```markdown") && rawText.endsWith("```")) {
+            rawText = rawText
+              .replace(/^```markdown/, "")
+              .replace(/```$/, "")
+              .trim();
+          }
+
+          try {
+            // Buat textarea tersembunyi untuk menyalin
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = rawText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+
+            showMessage("success", "Teks berhasil disalin tanpa blok kode!");
+          } catch (err) {
+            showMessage("error", "Gagal menyalin teks.");
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
