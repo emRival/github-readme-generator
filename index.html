@@ -7,7 +7,7 @@
 
     <meta
       name="description"
-      content="Generator README.md gratis dan cerdas berbasis AI dari GitHub repository. Buat README yang profesional, menarik, dan mudah dipahami hanya dalam satu klik. Dibuat oleh emRival." />
+      content="README.md Generator gratis dan cerdas berbasis AI dari GitHub repository. Buat README yang profesional, menarik, dan mudah dipahami hanya dalam satu klik. Dibuat oleh emRival." />
     <meta
       name="keywords"
       content="README generator, GitHub README generator, AI README maker, free markdown generator, emRival, auto generate readme, open source documentation" />
@@ -137,11 +137,17 @@
     class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
     <!-- Main App Container -->
     <div class="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8">
-      <div class="text-center mb-6">
-        <h1 class="text-3xl md:text-4xl font-bold text-cyan-400">
-          Generator README.md
-        </h1>
-        <p class="text-gray-400 mt-2">
+  <div
+        class="text-center mb-6 flex flex-col items-center justify-center gap-2">
+        <div class="flex items-center gap-3">
+
+          <img src="logo-web.png" alt="Logo" class="w-20 h-20" />
+
+          <h1 class="text-3xl md:text-4xl font-bold text-cyan-400">
+            README.md Generator
+          </h1>
+        </div>
+        <p class="text-gray-400 text-sm md:text-base">
           Buat README.md profesional dengan konteks yang lebih baik menggunakan
           AI.
         </p>
@@ -284,7 +290,7 @@
         <h2 class="text-2xl font-bold text-cyan-400">Pengaturan API Keys</h2>
         <p class="text-gray-300">
           Untuk menggunakan aplikasi ini, Anda memerlukan kedua key di bawah
-          ini.
+          ini. API key disimpan secara lokal di browser melalui <strong>localStorage</strong> dan tidak pernah dikirim ke server. Ini memastikan keamanan dan privasi data Anda.
         </p>
         <div class="space-y-4">
           <div>
@@ -751,9 +757,7 @@
                     }. **Lisensi 📄**: Sebutkan lisensi proyek dari data (\`${
             repoDetails.license ? repoDetails.license.name : "Tidak disebutkan"
           }\`).
-                    ${structureNumbers.credits}. ---
- **README.md ini dihasilkan secara otomatis menggunakan [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh **[emRival](https://github.com/emRival)**.
-
+                  
                     Pastikan hasil AKHIR HANYA berupa konten Markdown mentah, tanpa penjelasan atau blok kode pembungkus.`;
         }
 
@@ -800,16 +804,19 @@
               .trim();
           }
 
+          // Tambahkan kredit hanya saat disalin
+          const credit = `\n\n---\n*README.md ini dihasilkan secara otomatis menggunakan [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh **[emRival](https://github.com/emRival)*`;
+          const finalText = rawText + credit;
+
           try {
-            // Buat textarea tersembunyi untuk menyalin
             const tempTextArea = document.createElement("textarea");
-            tempTextArea.value = rawText;
+            tempTextArea.value = finalText;
             document.body.appendChild(tempTextArea);
             tempTextArea.select();
             document.execCommand("copy");
             document.body.removeChild(tempTextArea);
 
-            showMessage("success", "Teks berhasil disalin tanpa blok kode!");
+            showMessage("success", "Teks berhasil disalin.");
           } catch (err) {
             showMessage("error", "Gagal menyalin teks.");
           }
