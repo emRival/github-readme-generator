@@ -8,10 +8,6 @@
 
 **GitHub Readme Generator** adalah proyek sederhana berbasis web yang dirancang untuk membantu Anda membuat berkas README yang menarik dan informatif untuk repositori GitHub Anda. Proyek ini menyediakan antarmuka yang mudah digunakan yang memungkinkan Anda untuk dengan cepat menghasilkan README yang terstruktur dengan baik, menghemat waktu dan tenaga Anda. Meskipun masih dalam tahap pengembangan, proyek ini bertujuan untuk menyederhanakan proses pembuatan dokumentasi proyek dan meningkatkan presentasi repositori Anda.
 
-<p align="center" style="display: flex; gap: 1%; justify-content: center;"><img src="https://raw.githubusercontent.com/emRival/commuterline-schedule/refs/heads/main/screenshots/train_list.png" alt="Pratinjau" width="32%">
-<img src="https://raw.githubusercontent.com/emRival/commuterline-schedule/refs/heads/main/screenshots/train_list.png" alt="Pratinjau" width="32%">
-<img src="https://raw.githubusercontent.com/emRival/commuterline-schedule/refs/heads/main/screenshots/train_list.png" alt="Pratinjau" width="32%"></p>
-
 ## Fitur Utama ✨
 
 *   **Generator Cepat**: Hasilkan README dasar dengan cepat melalui antarmuka berbasis web.
