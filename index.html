@@ -12,14 +12,14 @@
       name="keywords"
       content="README generator, GitHub README generator, AI README maker, free markdown generator, emRival, auto generate readme, open source documentation" />
     <meta name="author" content="emRival" />
-    <meta
-      property="og:title"
-      content="FREE GITHUB README.MD GENERATOR" />
+    <meta property="og:title" content="FREE GITHUB README.MD GENERATOR" />
     <meta
       property="og:description"
       content="Generator README.md gratis berbasis AI untuk membuat dokumentasi GitHub yang profesional dan menarik." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://emrival.github.io/github-readme-generator/" />
+    <meta
+      property="og:url"
+      content="https://emrival.github.io/github-readme-generator/" />
     <meta
       property="og:image"
       content="https://raw.githubusercontent.com/emRival/github-readme-generator/refs/heads/main/logo-web.png" />
@@ -112,7 +112,10 @@
       .tag-remove-btn:hover {
         background-color: #1e3a8a;
       }
-
+      #readmeOutput {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
       /* Custom container for GitHub Markdown style */
       #pane-preview.markdown-body {
         box-sizing: border-box;
@@ -137,10 +140,10 @@
     class="bg-gray-900 text-white flex items-center justify-center min-h-screen p-4">
     <!-- Main App Container -->
     <div class="w-full max-w-4xl bg-gray-800 rounded-2xl shadow-2xl p-6 md:p-8">
-  <div
+      <div
         class="text-center mb-6 flex flex-col items-center justify-center gap-2">
         <div class="flex items-center gap-3">
-
+          <!-- Ikon (contoh: dokumen/code) -->
           <img src="logo-web.png" alt="Logo" class="w-20 h-20" />
 
           <h1 class="text-3xl md:text-4xl font-bold text-cyan-400">
@@ -262,12 +265,11 @@
           </button>
         </div>
         <div id="pane-markdown" class="mt-4">
-          <textarea
+          <div
             id="readmeOutput"
-            rows="20"
-            class="w-full bg-gray-800 border-2 border-gray-700 rounded-b-lg p-4 text-gray-200 font-mono text-sm"
-            readonly
-            placeholder="Hasil Markdown akan muncul di sini..."></textarea>
+            contenteditable="true"
+            class="w-full min-h-[480px] bg-gray-800 border-2 border-gray-700 rounded-b-lg p-4 text-gray-200 font-mono text-sm whitespace-pre-wrap"
+            placeholder="Hasil Markdown akan muncul di sini..."></div>
         </div>
         <div
           id="pane-preview"
@@ -277,7 +279,13 @@
       </div>
 
       <div class="text-center mt-6 text-gray-500 text-sm">
-        Dibuat dengan <span class="text-red-500">&hearts;</span> dan AI
+        Dibuat dengan <span class="text-red-500">&hearts;</span> AI oleh
+        <a
+          href="https://github.com/emRival"
+          target="_blank"
+          class="text-cyan-400 hover:underline"
+          >@emRival</a
+        >
       </div>
     </div>
 
@@ -290,7 +298,7 @@
         <h2 class="text-2xl font-bold text-cyan-400">Pengaturan API Keys</h2>
         <p class="text-gray-300">
           Untuk menggunakan aplikasi ini, Anda memerlukan kedua key di bawah
-          ini. API key disimpan secara lokal di browser melalui <strong>localStorage</strong> dan tidak pernah dikirim ke server. Ini memastikan keamanan dan privasi data Anda.
+          ini. Tanpa Gemini API Key, Anda hanya bisa generate **1x per hari**.
         </p>
         <div class="space-y-4">
           <div>
@@ -347,7 +355,7 @@
           <button
             id="modal-close-btn"
             class="w-full bg-gray-600 hover:bg-gray-500 text-white font-semibold py-2 px-4 rounded-lg transition">
-            Close
+            Lanjutkan Tanpa Gemini Key
           </button>
         </div>
       </div>
@@ -397,14 +405,15 @@
         addNewImageInput(true);
 
         // Show modal if either key is missing
-   if (
-  !localStorage.getItem("githubApiToken")?.trim() ||
-  !localStorage.getItem("geminiApiKey")?.trim()
-) {
-  apiKeysModal.classList.remove("hidden");
-} else {
-  apiKeysModal.classList.add("hidden");
-}
+        // Show modal if either key is missing
+        if (
+          !localStorage.getItem("githubApiToken")?.trim() ||
+          !localStorage.getItem("geminiApiKey")?.trim()
+        ) {
+          apiKeysModal.classList.remove("hidden");
+        } else {
+          apiKeysModal.classList.add("hidden");
+        }
 
         // --- Event Listeners ---
         generateBtn.addEventListener("click", handleGenerateReadme);
@@ -483,7 +492,7 @@
         }
 
         function renderPreview() {
-          let markdownText = readmeOutput.value.trim();
+          let markdownText = extractMarkdownFromContent(readmeOutput).trim();
 
           if (
             markdownText.startsWith("```markdown") &&
@@ -498,6 +507,20 @@
           previewPane.innerHTML = `<div class="markdown-body">${marked.parse(
             markdownText
           )}</div>`;
+        }
+        function extractMarkdownFromContent(element) {
+          const html = element.innerHTML;
+
+          // Ganti <div>, <br> jadi baris baru
+          return html
+            .replace(/<div>/g, "\n")
+            .replace(/<br>/g, "\n")
+            .replace(/<\/div>/g, "")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&gt;/g, ">")
+            .replace(/&lt;/g, "<")
+            .replace(/&amp;/g, "&")
+            .trim();
         }
 
         function switchTab(tabName) {
@@ -525,7 +548,7 @@
           btnText.textContent = isLoading ? "Memproses..." : "Generate";
           loader.classList.toggle("hidden", !isLoading);
           if (isLoading) {
-            readmeOutput.value =
+            readmeOutput.innerText =
               "Menganalisis repositori dan menghasilkan README.md, mohon tunggu...";
             renderPreview();
           }
@@ -620,7 +643,7 @@
 
             const generatedReadme = await callGeminiApi(prompt, userGeminiKey);
 
-            readmeOutput.value = generatedReadme;
+            readmeOutput.innerText = stripMarkdownWrapper(generatedReadme);
             switchTab("preview");
             renderPreview(); // ini HARUS dipanggil setelah preview ditampilkan
 
@@ -640,11 +663,18 @@
               "error",
               error.message || "Terjadi kesalahan yang tidak diketahui."
             );
-            readmeOutput.value = `# Gagal Membuat README\n\n**Error:** ${error.message}`;
+            readmeOutput.innerText = `# Gagal Membuat README\n\n**Error:** ${error.message}`;
             renderPreview();
           } finally {
             setLoading(false);
           }
+        }
+
+        function stripMarkdownWrapper(text) {
+          return text
+            .replace(/^```markdown/, "")
+            .replace(/```$/, "")
+            .trim();
         }
 
         function parseGithubUrl(url) {
@@ -757,7 +787,8 @@
                     }. **Lisensi 📄**: Sebutkan lisensi proyek dari data (\`${
             repoDetails.license ? repoDetails.license.name : "Tidak disebutkan"
           }\`).
-                  
+                   
+
                     Pastikan hasil AKHIR HANYA berupa konten Markdown mentah, tanpa penjelasan atau blok kode pembungkus.`;
         }
 
@@ -794,7 +825,7 @@
         }
 
         function copyToClipboard() {
-          let rawText = readmeOutput.value;
+          let rawText = readmeOutput.textContent;
 
           // Hilangkan blok ```markdown dan penutup ```
           if (rawText.startsWith("```markdown") && rawText.endsWith("```")) {
