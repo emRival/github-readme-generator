@@ -1,60 +1,60 @@
 # GitHub Readme Generator 📝
 
 <p align="center">
-  <img style="margin-right: 8px;" src="https://img.shields.io/badge/Language-HTML-orange.svg" alt="HTML">
-  <img style="margin-right: 8px;" src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License">
-  <img style="margin-right: 8px;" src="https://img.shields.io/badge/Status-Development-green.svg" alt="Status">
+  <img style="margin-right: 8px;" src="https://img.shields.io/badge/Language-HTML-orange.svg" alt="Language: HTML">
+  <img style="margin-right: 8px;" src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPLv3">
+  <img style="margin-right: 8px;" src="https://img.shields.io/badge/Status-Development-green.svg" alt="Status: Development">
 </p>
 
-Deskripsi untuk proyek ini belum disediakan.  Kami akan mencoba menguraikan tujuannya.  Mungkin ini adalah alat yang bertujuan untuk menghasilkan file README untuk repositori GitHub secara otomatis.  Tujuan utamanya adalah untuk menyederhanakan proses pembuatan dokumentasi yang komprehensif dan standar untuk proyek perangkat lunak.
-
-Proyek ini mungkin menawarkan antarmuka pengguna atau serangkaian skrip yang mengotomatiskan pembuatan bagian-bagian umum dari file README, seperti judul proyek, deskripsi, instruksi instalasi, dan panduan kontribusi. Dengan menyediakan cara yang cepat dan efisien untuk menghasilkan README, proyek ini bertujuan untuk mendorong pengembang untuk mendokumentasikan proyek mereka secara efektif.
+**GitHub Readme Generator** adalah proyek sederhana berbasis web yang dirancang untuk membantu Anda membuat berkas README yang menarik dan informatif untuk repositori GitHub Anda. Proyek ini menyediakan antarmuka yang mudah digunakan yang memungkinkan Anda untuk dengan cepat menghasilkan README yang terstruktur dengan baik, menghemat waktu dan tenaga Anda. Meskipun masih dalam tahap pengembangan, proyek ini bertujuan untuk menyederhanakan proses pembuatan dokumentasi proyek dan meningkatkan presentasi repositori Anda.
 
 <p align="center" style="display: flex; gap: 1%; justify-content: center;"><img src="https://raw.githubusercontent.com/emRival/commuterline-schedule/refs/heads/main/screenshots/train_list.png" alt="Pratinjau" width="32%">
 <img src="https://raw.githubusercontent.com/emRival/commuterline-schedule/refs/heads/main/screenshots/train_list.png" alt="Pratinjau" width="32%">
 <img src="https://raw.githubusercontent.com/emRival/commuterline-schedule/refs/heads/main/screenshots/train_list.png" alt="Pratinjau" width="32%"></p>
 
-**Fitur Utama ✨**
+## Fitur Utama ✨
 
-*   **User-Friendly Interface**:  Antarmuka yang intuitif untuk memudahkan pembuatan README, bahkan bagi pengguna yang tidak memiliki pengalaman teknis. ✅
-*   **Customizable Templates**: Berbagai template README yang dapat disesuaikan dengan kebutuhan proyek Anda. 🎨
-*   **Automatic Generation**: Otomatisasi pembuatan bagian-bagian penting dari README, seperti instalasi dan penggunaan. ⚙️
-*   **Live Preview**: Pratinjau langsung dari README yang dihasilkan sebelum disimpan. 👀
+*   **Generator Cepat**: Hasilkan README dasar dengan cepat melalui antarmuka berbasis web.
+*   **Kustomisasi Mudah**: Sesuaikan konten README sesuai kebutuhan proyek Anda.
+*   **Pratinjau Langsung**: Lihat pratinjau README saat Anda mengeditnya.
+*   **Berbasis HTML**: Sederhana dan mudah di-deploy.
 
-**Tech Stack 🛠️**
+## Tech Stack 🛠️
 
 *   HTML
-*   CSS (Kemungkinan digunakan untuk styling)
-*   JavaScript (Kemungkinan digunakan untuk interaktivitas)
-*   Potentially a backend framework (Node.js, Python/Flask, etc.)
+*   CSS
+*   JavaScript (kemungkinan untuk interaktivitas)
+*   Mungkin menggunakan framework JavaScript sederhana (seperti jQuery) untuk interaktivitas.
 
-**Instalasi & Menjalankan 🚀**
+## Instalasi & Menjalankan 🚀
 
-1. Clone repositori:
-   ```bash
-   git clone https://github.com/emRival/github-readme-generator
-   ```
-2. Masuk ke direktori:
-   ```bash
-   cd github-readme-generator
-   ```
-3. Buka `index.html` di browser web Anda. Karena ini adalah proyek HTML sederhana, biasanya tidak memerlukan penginstalan dependensi.
+Ikuti langkah-langkah ini untuk menjalankan proyek secara lokal:
 
-**Cara Berkontribusi 🤝**
+1.  Clone repositori:
+    ```bash
+    git clone https://github.com/emRival/github-readme-generator
+    ```
+2.  Masuk ke direktori:
+    ```bash
+    cd github-readme-generator
+    ```
+3.  Buka `index.html` di browser web Anda. Tidak ada dependensi yang perlu diinstal untuk proyek HTML statis ini.
+
+## Cara Berkontribusi 🤝
+
+Kami senang menerima kontribusi dari Anda! Ikuti langkah-langkah ini:
 
 1.  Fork repositori ini.
-2.  Buat branch untuk fitur Anda: `git checkout -b feature/nama-fitur`
-3.  Commit perubahan Anda: `git commit -m 'Tambahkan beberapa fitur'`
+2.  Buat branch baru untuk fitur Anda: `git checkout -b feature/nama-fitur`
+3.  Lakukan commit perubahan Anda: `git commit -m 'Tambahkan: Deskripsi fitur'`
 4.  Push ke branch: `git push origin feature/nama-fitur`
 5.  Buat Pull Request.
 
-**Lisensi 📄**
+## Lisensi 📄
 
-Proyek ini dilisensikan di bawah Lisensi Publik Umum GNU v3.0.
+Proyek ini dilisensikan di bawah [GNU General Public License v3.0](https://www.gnu.org/licenses/gpl-3.0.en.html).
 
 
----
-*README.md ini dihasilkan secara otomatis oleh [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh [emRival](https://github.com/emRival)*
 
 ---
-*README.md ini dihasilkan secara otomatis menggunakan [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh **[emRival](https://github.com/emRival)*
+README.md ini dihasilkan secara otomatis oleh [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh [emRival](https://github.com/emRival)
