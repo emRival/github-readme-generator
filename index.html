@@ -643,7 +643,18 @@
 
             const generatedReadme = await callGeminiApi(prompt, userGeminiKey);
 
-            readmeOutput.innerText = stripMarkdownWrapper(generatedReadme);
+            readmeOutput.innerHTML =
+              '<div style="white-space: pre-wrap;">' +
+              stripMarkdownWrapper(generatedReadme)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\n/g, "<br>") +
+              "</div>" +
+              `<span style="font-size:0.1px; opacity:0; user-select:text;">
+\n\n---\nREADME.md ini dihasilkan secara otomatis oleh [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh [emRival](https://github.com/emRival)
+</span>`;
+
             switchTab("preview");
             renderPreview(); // ini HARUS dipanggil setelah preview ditampilkan
 
@@ -825,7 +836,7 @@
         }
 
         function copyToClipboard() {
-          let rawText = readmeOutput.textContent;
+          let rawText = extractMarkdownFromContent(readmeOutput);
 
           // Hilangkan blok ```markdown dan penutup ```
           if (rawText.startsWith("```markdown") && rawText.endsWith("```")) {
@@ -835,9 +846,9 @@
               .trim();
           }
 
-          // Tambahkan kredit hanya saat disalin
-          const credit = `\n\n---\n*README.md ini dihasilkan secara otomatis menggunakan [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh **[emRival](https://github.com/emRival)*`;
-          const finalText = rawText + credit;
+          // // Tambahkan kredit hanya saat disalin
+          // const credit = `\n\n---\n*README.md ini dihasilkan secara otomatis menggunakan [README.MD Generator](https://github.com/emRival) — dibuat dengan ❤️ oleh **[emRival](https://github.com/emRival)*`;
+          const finalText = rawText;
 
           try {
             const tempTextArea = document.createElement("textarea");
@@ -851,6 +862,21 @@
           } catch (err) {
             showMessage("error", "Gagal menyalin teks.");
           }
+        }
+
+        function extractMarkdownFromContent(element) {
+          let html = element.innerHTML;
+
+          // Biarkan tag <img> tetap, tapi hapus tag lain seperti <div>, <p>, dll
+          return html
+            .replace(/<\/p>/gi, "\n\n")
+            .replace(/<br\s*\/?>/gi, "\n")
+            .replace(/<\/?(div|span|strong|em|b|i|u|code|pre|h\d)[^>]*>/gi, "")
+            .replace(/&nbsp;/g, " ")
+            .replace(/&gt;/g, ">")
+            .replace(/&lt;/g, "<")
+            .replace(/&amp;/g, "&")
+            .trim();
         }
       });
     </script>
